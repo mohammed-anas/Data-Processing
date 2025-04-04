@@ -1,0 +1,89 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-network
+
+  kafka-broker-1:
+    image: wurstmeister/kafka:latest
+    container_name: kafka-broker-1
+    ports:
+      - "9093:9093" # External port for Broker 1
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-broker-1:9093,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT  # Define protocols for each listener
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT  # Default protocol
+      KAFKA_LISTENER_NAMES: INSIDE,OUTSIDE
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9094 # Change OUTSIDE port to 9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_REPLICA_FACTOR: 2
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE  # Set internal communication listener
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'  # Disable automatic topic creation
+    networks:
+      - kafka-network
+    depends_on:
+      - zookeeper
+
+  kafka-broker-2:
+    image: wurstmeister/kafka:latest
+    container_name: kafka-broker-2
+    ports:
+      - "9094:9094" # External port for Broker 2
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-broker-2:9093,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT  # Define protocols for each listener
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT  # Default protocol
+      KAFKA_LISTENER_NAMES: INSIDE,OUTSIDE
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9095 # Change OUTSIDE port to 9095
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_REPLICA_FACTOR: 2
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE  # Set internal communication listener
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'  # Disable automatic topic creation
+    networks:
+      - kafka-network
+    depends_on:
+      - zookeeper
+
+  kafka-broker-3:
+    image: wurstmeister/kafka:latest
+    container_name: kafka-broker-3
+    ports:
+      - "9095:9095" # External port for Broker 3
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-broker-3:9093,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT  # Define protocols for each listener
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT  # Default protocol
+      KAFKA_LISTENER_NAMES: INSIDE,OUTSIDE
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9096 # Change OUTSIDE port to 9096
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 3
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_REPLICA_FACTOR: 2
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE  # Set internal communication listener
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'  # Disable automatic topic creation
+    networks:
+      - kafka-network
+    depends_on:
+      - zookeeper
+
+networks:
+  kafka-network:
+    driver: bridge

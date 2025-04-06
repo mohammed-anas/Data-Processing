@@ -2,24 +2,22 @@ spring:
   application:
     name: kafka-flink-processing
   kafka:
-    bootstrap-servers:
-      - localhost:9093
-      - localhost:9094
-      - localhost:9095
+    bootstrap-servers: localhost:9091,localhost:9092,localhost:9093
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer # Updated to use Apache Kafka's StringSerializer
     consumer:
       group-id: user-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer # Updated to use Apache Kafka's StringDeserializer
       properties:
         spring:
           json:
-            trusted.packages: "*"
+            trusted.packages: "*" # Ensure this is handled properly, especially for non-String types
     topic:
       name: users
+
 server:
-  port: 8080
+  port: 8090
   servlet:
     context-path: /api

@@ -2,7 +2,7 @@ spring:
   application:
     name: kafka-flink-processing
   kafka:
-    bootstrap-servers: localhost:9091,localhost:9092,localhost:9093
+    bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer # Updated to use Apache Kafka's StringSerializer

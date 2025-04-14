@@ -16,8 +16,11 @@ spring:
             trusted.packages: "*" # Ensure this is handled properly, especially for non-String types
     topic:
       name: users
+crypto:
+  ws-url: wss://stream.binance.com:9443/stream?streams=btcusdt@trade/ethusdt@trade
+  topic: crypto-prices
 
 server:
-  port: 8090
+  port: 8091
   servlet:
     context-path: /api
